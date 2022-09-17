@@ -26,9 +26,11 @@ const NavBar = (props: Props) => {
                     >
                         <MenuIcon />
                     </IconButton> */}
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Link href={'/'}>
+                    <Typography style={{cursor: 'pointer'}} variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Favourite Youtube Channels
                     </Typography>
+                    </Link>
                     <Link href={'overall'}>
                         <Button color="inherit">Overall</Button>
                     </Link>
