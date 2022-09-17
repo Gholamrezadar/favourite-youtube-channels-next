@@ -37,7 +37,7 @@ function BasicTable() {
                             </TableCell>
                             <TableCell align="left">{row.channelName}</TableCell>
                             <TableCell align="left">{row.numVideosWatched}</TableCell>
-                            <TableCell align="left">{row.numVideosWatched * 2}</TableCell>
+                            <TableCell align="left">{(row.numVideosWatched / overallData.length*100).toFixed(2)}%</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
