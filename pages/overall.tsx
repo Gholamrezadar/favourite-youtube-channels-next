@@ -27,7 +27,7 @@ function BasicTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {overallData.slice(0, 30).map((row, index) => (
+                    {overallData.slice(0, 200).map((row, index) => (
                         <TableRow
                             key={row.channelName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
