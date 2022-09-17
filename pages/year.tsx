@@ -45,7 +45,7 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
 }
 
 function BasicTable({ year }: { year: any }) {
-  const { yearData, overallData } = useContext(DataContext);
+  const { yearData } = useContext(DataContext);
 
   return (
     <TableContainer component={Paper} >
@@ -69,7 +69,7 @@ function BasicTable({ year }: { year: any }) {
               </TableCell>
               <TableCell align="left">{row.channelName}</TableCell>
               <TableCell align="left">{row.numVideosWatched}</TableCell>
-              <TableCell align="left">{(row.numVideosWatched / overallData.length*100).toFixed(2)}%</TableCell>
+              <TableCell align="left">{(row.numVideosWatched / yearData.get(year)?.length*100).toFixed(2)}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
