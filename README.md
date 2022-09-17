@@ -1,34 +1,20 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### follow these steps to get 'watch-history.json' : 
+* Go to this url https://takeout.google.com/settings/takeout
 
-## Getting Started
+* Click on deselect all
 
-First, run the development server:
+![second image](https://github.com/Gholamrezadar/favourite-youtube-channels/blob/main/images/second%20step.jpg?raw=true)
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+* Scroll down and only select "YouTube and YouTube Music"
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![third image](https://github.com/Gholamrezadar/favourite-youtube-channels/blob/main/images/third%20step.jpg?raw=true)
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+* Click on multiple format and change history to JSON
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+![fourth image](https://github.com/Gholamrezadar/favourite-youtube-channels/blob/main/images/fourth%20step.jpg?raw=true)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+* Click on All YouTube data included and only select history
 
-## Learn More
+![fifth image](https://github.com/Gholamrezadar/favourite-youtube-channels/blob/main/images/fifth%20step.jpg?raw=true)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* Select a delivery method and click on "Create export"
