@@ -10,7 +10,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DataContext } from '../components/context/DataContext';
 
 function BasicSelect({ handleChange }: { handleChange: any }) {
-  const [yearState, setYearState] = useState('2022');
+  const [yearState, setYearState] = useState('2023');
 
   const handleChangeInner = (event: SelectChangeEvent) => {
     setYearState(event.target.value as string);
@@ -28,6 +28,7 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
           label="Year"
           onChange={handleChangeInner}
         >
+          <MenuItem value={2023}>2023</MenuItem>
           <MenuItem value={2022}>2022</MenuItem>
           <MenuItem value={2021}>2021</MenuItem>
           <MenuItem value={2020}>2020</MenuItem>
@@ -79,7 +80,7 @@ function BasicTable({ year }: { year: any }) {
 }
 
 const YearPage: NextPage = () => {
-  const [selectedYear, setselectedYear] = useState(2022);
+  const [selectedYear, setselectedYear] = useState(2023);
   const { yearData } = useContext(DataContext);
 
   return (
