@@ -1,18 +1,36 @@
 // @ts-nocheck
-// import { ChannelItem } from './../components/context/DataContext';
-// export let data = null;
-// export let overallData = null;
-// export let yearData = null;
-export let firstYear: number = 0;
-export let lastYear: number = 0;
+let firstYear = 0;
+let lastYear = 0;
+
+export interface ChannelItem {
+    channelUrl: string;
+    numVideosWatched: number;
+}
 
 interface JsonType {
-    time: string;
-    subtitles: {
-        name: string;
-        url: string;
+    header?: string;
+    title?: string;
+    titleUrl?: string;
+    subtitles?: {
+        name?: string;
+        url?: string;
     }[];
+    time?: string;
+    products?: string[];
+    activityControls?: string[];
+}
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export const processData = async (data: JsonType[]) => {
+    let {overallData, firstYear, lastYear} = getOverallChannels(data);
+    let yearData = getYearChannels(data);
+
+    await sleep(2000);
+
+    return { overallData: overallData, yearData: yearData, firstYear: firstYear, lastYear: lastYear };
 }
 
 export const getOverallChannels = (data: JsonType[]) => {
@@ -28,11 +46,7 @@ export const getOverallChannels = (data: JsonType[]) => {
                 lastYear = videoYear;
             }
 
-            if (firstYear === 0) {
-                firstYear = videoYear;
-            }
-
-            if (firstYear < videoYear) {
+            if (firstYear === 0 || firstYear > videoYear) {
                 firstYear = videoYear;
             }
 
@@ -54,10 +68,14 @@ export const getOverallChannels = (data: JsonType[]) => {
     }
 
     // Sort the map
-    let mapp = [...map].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
-    let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
+    // let mapp = [...map].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
+    // let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
 
-    return { overallData: mappp, firstYear: firstYear, lastYear: lastYear };
+    // new method
+    map = new Map([...map.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1));
+    // let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
+
+    return { overallData: map, firstYear: firstYear, lastYear: lastYear };
 }
 
 export const getYearChannels = (data: JsonType[]) => {
@@ -93,11 +111,11 @@ export const getYearChannels = (data: JsonType[]) => {
     // Sort the map
     let newMap = new Map();
 
-    map = [...map].map((yearItem) => {
+    map = [...map.entries()].map((yearItem) => {
         let innerMap = yearItem[1]; // yearItem[0] is the key aka the year
 
         // Sort the innerMap aka the channels map
-        innerMap = [...innerMap].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
+        innerMap = [...innerMap.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
         innerMap = innerMap.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
         newMap.set(yearItem[0], innerMap);
     });
