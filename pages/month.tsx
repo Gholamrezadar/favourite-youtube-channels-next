@@ -10,13 +10,13 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { DataContext } from '../components/context/DataContext';
 import useDataStore from '../lib/dataStore';
 
-function BasicSelect({ handleChange }: { handleChange: any }) {
-  const minYear = useDataStore((state) => state.minYear);
-  const maxYear = useDataStore((state) => state.maxYear);
+function SelectYear({ handleChange }: { handleChange: any }) {
+  const minYear = useDataStore((state) => state.minYear)
+  const maxYear = useDataStore((state) => state.maxYear)
 
-  const [currentYear, setCurrentYear] = useState(maxYear);
+  const [currentYear, setCurrentYear] = useState(maxYear)
 
-  const handleChangeInner = (event: SelectChangeEvent) => {
+  const handleChangeYear = (event: SelectChangeEvent) => {
     setCurrentYear(parseInt(event.target.value))
     handleChange(parseInt(event.target.value))
   };
@@ -30,7 +30,7 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
           id="demo-simple-select"
           value={currentYear.toString()}
           label="Year"
-          onChange={handleChangeInner}
+          onChange={handleChangeYear}
         >
           {Array.from(Array(maxYear - minYear + 1).keys()).map((year) => {
             return (
@@ -45,8 +45,44 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
   );
 }
 
-function BasicTable({ year }: { year: any }) {
-  const yearData = useDataStore((state) => state.yearData);
+function SelectMonth({ handleChange }: { handleChange: any }) {
+
+  const [currentMonth, setCurrentMonth] = useState(0)
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+  const handleChangeMonth = (event: SelectChangeEvent) => {
+    setCurrentMonth(months.indexOf(event.target.value))
+    handleChange(parseInt(event.target.value))
+  };
+
+  return (
+    <Box sx={{ minWidth: 120, maxWidth: 140 }}>
+      <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Year</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={currentMonth.toString()}
+          label="Year"
+          onChange={handleChangeMonth}
+        >
+          {months.map((month) => {
+            return (
+              <MenuItem value={month}>
+                {month}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+}
+
+
+function BasicTable({ year, month }: { year: number, month: number }) {
+  const monthData = useDataStore((state) => state.monthData)
+  const currentMonthData = monthData.get(year)?.get(month)
 
   return (
     <TableContainer component={Paper} >
@@ -60,7 +96,7 @@ function BasicTable({ year }: { year: any }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {yearData.get(year)?.slice(0, 100).map((row, index) => (
+          {currentMonthData?.slice(0, 100).map((row, index) => (
             <TableRow
               key={row.channelName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -70,7 +106,7 @@ function BasicTable({ year }: { year: any }) {
               </TableCell>
               <TableCell align="left"><a href={row.channelUrl}>{row.channelName}</a></TableCell>
               <TableCell align="left">{row.numVideosWatched}</TableCell>
-              <TableCell align="left">{(row.numVideosWatched / yearData.get(year)?.length*100).toFixed(2)}%</TableCell>
+              <TableCell align="left">{(row.numVideosWatched / currentMonthData?.length * 100).toFixed(2)}%</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -81,13 +117,15 @@ function BasicTable({ year }: { year: any }) {
 
 const YearPage: NextPage = () => {
   const [selectedYear, setselectedYear] = useState(2023);
+  const [selectedMonth, setselectedMonth] = useState(0);
   const { yearData } = useContext(DataContext);
 
   return (
     <Stack marginTop={4} alignItems={'center'} rowGap={2} >
-      <BasicSelect handleChange={setselectedYear} />
+      <SelectYear handleChange={setselectedYear} />
+      <SelectYear handleChange={setselectedMonth} />
       <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{yearData.get(selectedYear)?.length}</span> videos watched in {selectedYear}!</span>
-      <BasicTable year={selectedYear}/>
+      <BasicTable year={selectedYear} month={selectedMonth} />
     </Stack>)
 }
 

@@ -1,13 +1,11 @@
 import UploadIcon from '@mui/icons-material/Upload';
+import { Box, Button, CircularProgress, Stack } from '@mui/material';
 
 import React, { useState } from 'react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-
-import { getOverallChannels, getYearChannels, processData } from '../lib/dataUtils'
+import { processData } from '../lib/dataUtils'
 import useDataStore from '../lib/dataStore';
-import { Box, Button, CircularProgress, Stack } from '@mui/material';
-
 
 const Home: NextPage = () => {
   const [isFileRead, setIsFileRead] = useState(false)
@@ -17,6 +15,7 @@ const Home: NextPage = () => {
   const router = useRouter()
 
   // Zustand Store
+  const setNumVideos = useDataStore(state => state.setNumVideos)
   const setMinYear = useDataStore(state => state.setMinYear)
   const setMaxYear = useDataStore(state => state.setMaxYear)
   const setOverallData = useDataStore(state => state.setOverallData)
@@ -55,20 +54,21 @@ const Home: NextPage = () => {
 
   // Process button handler
   const onButtonClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    setIsProcessing(true);
+    setIsProcessing(true)
     // Process the raw data
-    const { overallData, firstYear, lastYear, yearData } = await processData(rawData);
+    const { overallData, firstYear, lastYear, yearData } = await processData(rawData)
     
     // Fill zustand store
-    setOverallData(overallData);
-    setMinYear(firstYear);
-    setMaxYear(lastYear);
-    setYearData(yearData);
+    setOverallData(overallData)
+    setNumVideos(overallData.length)
+    setMinYear(firstYear)
+    setMaxYear(lastYear)
+    setYearData(yearData)
 
-    setIsProcessing(false);
+    setIsProcessing(false)
 
     // Load successful => go to overallPage
-    router.push("overall");
+    router.push("overall")
   }
 
   return (

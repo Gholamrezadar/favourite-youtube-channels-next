@@ -3,6 +3,7 @@ let firstYear = 0;
 let lastYear = 0;
 
 export interface ChannelItem {
+    channelName: string;
     channelUrl: string;
     numVideosWatched: number;
 }
@@ -28,7 +29,7 @@ export const processData = async (data: JsonType[]) => {
     let {overallData, firstYear, lastYear} = getOverallChannels(data);
     let yearData = getYearChannels(data);
 
-    await sleep(2000);
+    // await sleep(2000); // fake sleep for testing
 
     return { overallData: overallData, yearData: yearData, firstYear: firstYear, lastYear: lastYear };
 }
@@ -72,10 +73,10 @@ export const getOverallChannels = (data: JsonType[]) => {
     // let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
 
     // new method
-    map = new Map([...map.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1));
-    // let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
+    map = [...map.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1)
+    let list:ChannelItem[] = map.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }))
 
-    return { overallData: map, firstYear: firstYear, lastYear: lastYear };
+    return { overallData: list, firstYear: firstYear, lastYear: lastYear };
 }
 
 export const getYearChannels = (data: JsonType[]) => {

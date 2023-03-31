@@ -6,9 +6,9 @@ interface DataState {
     numVideos: number;
     minYear: number;
     maxYear: number;
-    overallData: Map<string, ChannelItem>;
-    yearData: Map<string, Map<string, ChannelItem>>;
-    monthData: Map<string, Map<string, Map<string, ChannelItem>>>;
+    overallData: ChannelItem[];
+    yearData: Map<string, ChannelItem[]>;
+    monthData: Map<string, Map<string, ChannelItem[]>>;
     rewatchData: Map<string, number>;
     mostFrequentWords: Map<string, number>;
 
@@ -16,9 +16,9 @@ interface DataState {
     setNumVideos: (numVideos: number) => void;
     setMinYear: (minYear: number) => void;
     setMaxYear: (maxYear: number) => void;
-    setOverallData: (overallData: Map<string, ChannelItem>) => void;
-    setYearData: (yearData: Map<string, Map<string, ChannelItem>>) => void;
-    setMonthData: (monthData: Map<string, Map<string, Map<string, ChannelItem>>>) => void;
+    setOverallData: (overallData: ChannelItem[]) => void;
+    setYearData: (yearData: Map<string, ChannelItem[]>) => void;
+    setMonthData: (monthData: Map<string, Map<string, ChannelItem[]>>) => void;
     setRewatchData: (rewatchData: Map<string, number>) => void;
     setMostFrequentWords: (mostFrequentWords: Map<string, number>) => void;
 }
@@ -28,7 +28,7 @@ const useDataStore = create<DataState>((set) => ({
     numVideos: 0,
     minYear: 0,
     maxYear: 0,
-    overallData: new Map(),
+    overallData: [],
     yearData: new Map(),
     monthData: new Map(),
     rewatchData: new Map(),
@@ -38,9 +38,9 @@ const useDataStore = create<DataState>((set) => ({
     setNumVideos: (numVideos: number) => set({ numVideos }),
     setMinYear: (minYear: number) => set({ minYear }),
     setMaxYear: (maxYear: number) => set({ maxYear }),
-    setOverallData: (overallData: Map<string, ChannelItem>) => set({ overallData }),
-    setYearData: (yearData: Map<string, Map<string, ChannelItem>>) => set({ yearData }),
-    setMonthData: (monthData: Map<string, Map<string, Map<string, ChannelItem>>>) => set({ monthData }),
+    setOverallData: (overallData: ChannelItem[]) => set({ overallData }),
+    setYearData: (yearData: Map<string, ChannelItem[]>) => set({ yearData }),
+    setMonthData: (monthData: Map<string, Map<string, ChannelItem[]>>) => set({ monthData }),
     setRewatchData: (rewatchData: Map<string, number>) => set({ rewatchData }),
     setMostFrequentWords: (mostFrequentWords: Map<string, number>) => set({ mostFrequentWords })
 }))
