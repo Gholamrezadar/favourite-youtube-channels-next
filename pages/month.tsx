@@ -45,28 +45,29 @@ function SelectYear({ handleChange }: { handleChange: any }) {
   );
 }
 
-function SelectMonth({ handleChange }: { handleChange: any }) {
+function SelectMonth({MonthsLength, handleChange }: { handleChange: any }) {
 
-  const [currentMonth, setCurrentMonth] = useState(0)
+  const [currentMonth, setCurrentMonth] = useState("January")
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
+
   const handleChangeMonth = (event: SelectChangeEvent) => {
-    setCurrentMonth(months.indexOf(event.target.value))
-    handleChange(parseInt(event.target.value))
+    setCurrentMonth(event.target.value)
+    handleChange(event.target.value)
   };
 
   return (
     <Box sx={{ minWidth: 120, maxWidth: 140 }}>
       <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Year</InputLabel>
+        <InputLabel id="demo-simple-select-label">Month</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={currentMonth.toString()}
-          label="Year"
+          label="Month"
           onChange={handleChangeMonth}
         >
-          {months.map((month) => {
+          {months.slice(0, MonthsLength).map((month) => {
             return (
               <MenuItem value={month}>
                 {month}
@@ -79,10 +80,12 @@ function SelectMonth({ handleChange }: { handleChange: any }) {
   );
 }
 
-
-function BasicTable({ year, month }: { year: number, month: number }) {
+function BasicTable({ year, month }: { year: string, month: string }) {
   const monthData = useDataStore((state) => state.monthData)
   const currentMonthData = monthData.get(year)?.get(month)
+  console.log("currentMonthData");
+  
+  console.log(currentMonthData)
 
   return (
     <TableContainer component={Paper} >
@@ -115,18 +118,23 @@ function BasicTable({ year, month }: { year: number, month: number }) {
   );
 }
 
-const YearPage: NextPage = () => {
-  const [selectedYear, setselectedYear] = useState(2023);
-  const [selectedMonth, setselectedMonth] = useState(0);
-  const { yearData } = useContext(DataContext);
+const MonthPage: NextPage = () => {
+  const [selectedYear, setselectedYear] = useState("2023")
+  const [selectedMonth, setselectedMonth] = useState("January")
+  const monthData = useDataStore((state) => state.monthData)
+  console.log("monthData")
+  console.log(monthData)
 
   return (
-    <Stack marginTop={4} alignItems={'center'} rowGap={2} >
-      <SelectYear handleChange={setselectedYear} />
-      <SelectYear handleChange={setselectedMonth} />
-      <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{yearData.get(selectedYear)?.length}</span> videos watched in {selectedYear}!</span>
+    <Stack marginTop={4} alignItems={'center'} rowGap={2}>
+      <Stack direction={'row'} alignItems={'center'} columnGap={2}>
+        <SelectYear handleChange={setselectedYear} />
+        <SelectMonth MonthsLength={monthData?.get(selectedYear)?.size}  handleChange={setselectedMonth} />
+      </Stack>
+        
+      <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{monthData.get(selectedYear)?.get(selectedMonth)?.length}</span> videos watched in {selectedMonth} of {selectedYear}!</span>
       <BasicTable year={selectedYear} month={selectedMonth} />
     </Stack>)
 }
 
-export default YearPage
+export default MonthPage

@@ -80,14 +80,14 @@ function BasicTable({ year }: { year: any }) {
 }
 
 const YearPage: NextPage = () => {
-  const [selectedYear, setselectedYear] = useState(2023);
-  const { yearData } = useContext(DataContext);
+  const [selectedYear, setselectedYear] = useState("2023")
+  const yearData = useDataStore((state) => state.yearData)
 
   return (
     <Stack marginTop={4} alignItems={'center'} rowGap={2} >
       <BasicSelect handleChange={setselectedYear} />
       <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{yearData.get(selectedYear)?.length}</span> videos watched in {selectedYear}!</span>
-      <BasicTable year={selectedYear}/>
+      <BasicTable year={parseInt(selectedYear)}/>
     </Stack>)
 }
 
