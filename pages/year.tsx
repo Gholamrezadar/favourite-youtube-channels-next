@@ -1,20 +1,22 @@
-import { Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import type { NextPage } from 'next'
-import { useContext, useEffect, useState } from 'react'
-import ButtonAppBar from '../components/appbar'
+import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { DataContext } from '../components/context/DataContext';
+import type { NextPage } from 'next';
+import { useState } from 'react';
+import useDataStore from '../lib/dataStore';
 
 function BasicSelect({ handleChange }: { handleChange: any }) {
-  const [yearState, setYearState] = useState('2023');
+  const minYear = useDataStore((state) => state.minYear);
+  const maxYear = useDataStore((state) => state.maxYear);
+
+  const [currentYear, setCurrentYear] = useState(maxYear);
 
   const handleChangeInner = (event: SelectChangeEvent) => {
-    setYearState(event.target.value as string);
-    handleChange(parseInt(event.target.value as string));
+    setCurrentYear(parseInt(event.target.value))
+    handleChange(parseInt(event.target.value))
   };
 
   return (
@@ -24,21 +26,17 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={yearState}
+          value={currentYear.toString()}
           label="Year"
           onChange={handleChangeInner}
         >
-          <MenuItem value={2023}>2023</MenuItem>
-          <MenuItem value={2022}>2022</MenuItem>
-          <MenuItem value={2021}>2021</MenuItem>
-          <MenuItem value={2020}>2020</MenuItem>
-          <MenuItem value={2019}>2019</MenuItem>
-          <MenuItem value={2018}>2018</MenuItem>
-          <MenuItem value={2017}>2017</MenuItem>
-          <MenuItem value={2016}>2016</MenuItem>
-          <MenuItem value={2015}>2015</MenuItem>
-          <MenuItem value={2014}>2014</MenuItem>
-          <MenuItem value={2013}>2013</MenuItem>
+          {Array.from(Array(maxYear - minYear + 1).keys()).map((year) => {
+            return (
+              <MenuItem value={maxYear - year} key={maxYear - year}>
+                {maxYear - year}
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
     </Box>
@@ -46,7 +44,7 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
 }
 
 function BasicTable({ year }: { year: any }) {
-  const { yearData } = useContext(DataContext);
+  const yearData = useDataStore((state) => state.yearData);
 
   return (
     <TableContainer component={Paper} >
@@ -60,7 +58,7 @@ function BasicTable({ year }: { year: any }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {yearData.get(year)?.slice(0, 30).map((row, index) => (
+          {yearData.get(year)?.slice(0, 100).map((row, index) => (
             <TableRow
               key={row.channelName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -68,7 +66,7 @@ function BasicTable({ year }: { year: any }) {
               <TableCell component="th" scope="row">
                 {index + 1}
               </TableCell>
-              <TableCell align="left">{row.channelName}</TableCell>
+              <TableCell align="left"><a href={row.channelUrl}>{row.channelName}</a></TableCell>
               <TableCell align="left">{row.numVideosWatched}</TableCell>
               <TableCell align="left">{(row.numVideosWatched / yearData.get(year)?.length*100).toFixed(2)}%</TableCell>
             </TableRow>
@@ -80,14 +78,14 @@ function BasicTable({ year }: { year: any }) {
 }
 
 const YearPage: NextPage = () => {
-  const [selectedYear, setselectedYear] = useState(2023);
-  const { yearData } = useContext(DataContext);
+  const [selectedYear, setselectedYear] = useState("2023")
+  const yearData = useDataStore((state) => state.yearData)
 
   return (
     <Stack marginTop={4} alignItems={'center'} rowGap={2} >
       <BasicSelect handleChange={setselectedYear} />
       <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{yearData.get(selectedYear)?.length}</span> videos watched in {selectedYear}!</span>
-      <BasicTable year={selectedYear}/>
+      <BasicTable year={parseInt(selectedYear)}/>
     </Stack>)
 }
 

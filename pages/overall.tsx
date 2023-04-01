@@ -1,19 +1,25 @@
-import { Container, Stack } from '@mui/material'
-import type { NextPage } from 'next'
-import { useContext, useEffect} from 'react'
-import styles from '../styles/Home.module.css'
+import { Container, Stack } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import ButtonAppBar from '../components/appbar'
-import { DataContext } from '../components/context/DataContext'
+import type { NextPage } from 'next';
+import { useContext, useEffect, useState } from 'react';
+import ButtonAppBar from '../components/appbar';
+import { DataContext } from '../components/context/DataContext';
+import useDataStore from '../lib/dataStore';
+import styles from '../styles/Home.module.css';
 
-function BasicTable() {
-    const {overallData} = useContext(DataContext);
+const BasicTable = ({setIsTableReady}) => {
+    const overallData = useDataStore(state => state.overallData);
+
+    useEffect(() => {
+        setIsTableReady(true);
+    }, [setIsTableReady])
+    
 
     return (
         <TableContainer component={Paper}>
@@ -27,7 +33,8 @@ function BasicTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {overallData.slice(0, 200).map((row, index) => (
+                    {overallData.slice(0, 200).map((row, index) => {
+                        return (
                         <TableRow
                             key={row.channelName}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -35,11 +42,11 @@ function BasicTable() {
                             <TableCell component="th" scope="row">
                                 {index+1}
                             </TableCell>
-                            <TableCell align="left">{row.channelName}</TableCell>
+                            <TableCell align="left"><a href={row.channelUrl}>{row.channelName}</a></TableCell>
                             <TableCell align="left">{row.numVideosWatched}</TableCell>
                             <TableCell align="left">{(row.numVideosWatched / overallData.length*100).toFixed(2)}%</TableCell>
-                        </TableRow>
-                    ))}
+                        </TableRow>)}
+                    )}
                 </TableBody>
             </Table>
         </TableContainer>
@@ -47,17 +54,15 @@ function BasicTable() {
 }
 
 const OverallPage: NextPage = () => {
-    const {overallData} = useContext(DataContext);
-
-    // useEffect(() => {
-    //     console.log("Overall speaking...");
-    //     console.log(overallData);
-    // }, [])
+    const numVideos = useDataStore(state => state.numVideos)
+    const [isTableReady, setIsTableReady] = useState(false)
 
     return (
     <Stack marginTop={4} alignItems={'center'} rowGap={2} >
-        <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{overallData.length}</span> videos watched!</span>
-        <BasicTable />
+        <span className='table-title-text'>A total of <span className='num-videos-watched-label'>{numVideos}</span> videos watched!</span>
+
+        {/* {!isTableReady && <span>Loading...</span>} */}
+        <BasicTable setIsTableReady={(val) => {setIsTableReady(val)}}/>
     </Stack>)
 }
 

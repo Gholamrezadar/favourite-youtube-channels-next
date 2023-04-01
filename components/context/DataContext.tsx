@@ -1,13 +1,12 @@
 import { createContext, Dispatch, SetStateAction } from "react"
 
-
-export interface ChannelItem{
+export interface ChannelItem {
     channelName: string;
     channelUrl: string;
     numVideosWatched: number;
 }
 
-export interface Data{
+export interface Data {
     title: string;
     overallData: ChannelItem[];
     yearData: Map<number, ChannelItem[]>;
