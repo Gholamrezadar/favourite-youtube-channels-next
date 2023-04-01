@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { ChannelItem } from './dataUtils';
+import { ChannelItem, VideoItem } from './dataUtils';
 
 interface DataState {
     rawData: any;
@@ -9,7 +9,7 @@ interface DataState {
     overallData: ChannelItem[];
     yearData: Map<string, ChannelItem[]>;
     monthData: Map<string, Map<string, ChannelItem[]>>;
-    rewatchData: Map<string, number>;
+    rewatchData: VideoItem[];
     mostFrequentWords: Map<string, number>;
 
     setRawData: (rawData: any) => void;
@@ -19,7 +19,7 @@ interface DataState {
     setOverallData: (overallData: ChannelItem[]) => void;
     setYearData: (yearData: Map<string, ChannelItem[]>) => void;
     setMonthData: (monthData: Map<string, Map<string, ChannelItem[]>>) => void;
-    setRewatchData: (rewatchData: Map<string, number>) => void;
+    setRewatchData: (rewatchData: VideoItem[]) => void;
     setMostFrequentWords: (mostFrequentWords: Map<string, number>) => void;
 }
 
@@ -31,7 +31,7 @@ const useDataStore = create<DataState>((set) => ({
     overallData: [],
     yearData: new Map(),
     monthData: new Map(),
-    rewatchData: new Map(),
+    rewatchData: [],
     mostFrequentWords: new Map(),
 
     setRawData: (rawData: any) => set({ rawData }),
@@ -41,19 +41,8 @@ const useDataStore = create<DataState>((set) => ({
     setOverallData: (overallData: ChannelItem[]) => set({ overallData }),
     setYearData: (yearData: Map<string, ChannelItem[]>) => set({ yearData }),
     setMonthData: (monthData: Map<string, Map<string, ChannelItem[]>>) => set({ monthData }),
-    setRewatchData: (rewatchData: Map<string, number>) => set({ rewatchData }),
+    setRewatchData: (rewatchData: VideoItem[]) => set({ rewatchData }),
     setMostFrequentWords: (mostFrequentWords: Map<string, number>) => set({ mostFrequentWords })
 }))
 
 export default useDataStore
-
-// How to use later
-// function BearCounter() {
-//     const bears = useBearStore((state) => state.bears)
-//     return <h1>{ bears } around here ...</h1>
-// }
-
-// function Controls() {
-//     const increasePopulation = useBearStore((state) => state.increasePopulation)
-//     return <button onClick={ increasePopulation }> one up < /button>
-// }

@@ -21,6 +21,7 @@ const Home: NextPage = () => {
   const setOverallData = useDataStore(state => state.setOverallData)
   const setYearData = useDataStore(state => state.setYearData)
   const setMonthData = useDataStore(state => state.setMonthData)
+  const setRewatchData = useDataStore(state => state.setRewatchData)
 
   // FileReader load handler
   const fileLoadHandler = (event: any) => {
@@ -56,7 +57,7 @@ const Home: NextPage = () => {
   const onButtonClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setIsProcessing(true)
     // Process the raw data
-    const { overallData, firstYear, lastYear, yearData, monthData } = await processData(rawData)
+    const { overallData, firstYear, lastYear, yearData, monthData, rewatchData } = await processData(rawData)
     
     // Fill zustand store
     setOverallData(overallData)
@@ -65,6 +66,7 @@ const Home: NextPage = () => {
     setMaxYear(lastYear)
     setYearData(yearData)
     setMonthData(monthData)
+    setRewatchData(rewatchData)
 
     setIsProcessing(false)
 
