@@ -32,7 +32,7 @@ function SelectYear({ handleChange }: { handleChange: any }) {
         >
           {Array.from(Array(maxYear - minYear + 1).keys()).map((year) => {
             return (
-              <MenuItem value={maxYear - year}>
+              <MenuItem value={maxYear - year} key={maxYear - year}>
                 {maxYear - year}
               </MenuItem>
             );
@@ -74,7 +74,7 @@ function SelectMonth({MonthsLength, handleChange, selectedMonth}: { MonthsLength
         >
           {months.slice(0, MonthsLength).map((month) => {
             return (
-              <MenuItem value={month}>
+              <MenuItem value={month} key={month}>
                 {month}
               </MenuItem>
             );

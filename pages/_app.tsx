@@ -15,8 +15,9 @@ import React from 'react';
 
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import Head from 'next/head';
 
-export const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
+export const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -62,6 +63,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <DataContext.Provider value={dataContextDefaultValue}>
+          <Head>
+            <title>Favourite Youtube Channels</title>
+          </Head>
           <Layout>
             <Component {...pageProps} />
           </Layout>

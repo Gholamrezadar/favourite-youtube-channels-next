@@ -15,8 +15,6 @@ export default class MyDocument extends Document {
                         href="https://fonts.googleapis.com/icon?family=Material+Icons"
                     />
                     <meta name="viewport" content="initial-scale=1, width=device-width" />
-                    <title>Favourite Youtube Channels</title>
-
                 </Head>
                 <body>
                     <Main />

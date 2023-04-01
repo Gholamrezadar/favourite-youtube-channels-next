@@ -32,7 +32,7 @@ function BasicSelect({ handleChange }: { handleChange: any }) {
         >
           {Array.from(Array(maxYear - minYear + 1).keys()).map((year) => {
             return (
-              <MenuItem value={maxYear - year}>
+              <MenuItem value={maxYear - year} key={maxYear - year}>
                 {maxYear - year}
               </MenuItem>
             );

@@ -18,7 +18,7 @@ const BasicTable = ({setIsTableReady}) => {
 
     useEffect(() => {
         setIsTableReady(true);
-    }, [])
+    }, [setIsTableReady])
     
 
     return (
