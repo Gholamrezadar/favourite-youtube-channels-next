@@ -26,7 +26,6 @@ const Home: NextPage = () => {
   const fileLoadHandler = (event: any) => {
     setRawData(JSON.parse(event.target.result));
     setIsFileRead(true);
-    console.log(`File Loaded successfully`);
   }
 
   // File input change(upload) handler

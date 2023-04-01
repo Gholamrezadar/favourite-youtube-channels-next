@@ -1,13 +1,11 @@
-import { Container, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
-import type { NextPage } from 'next'
-import { useContext, useEffect, useState } from 'react'
-import ButtonAppBar from '../components/appbar'
+import { Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { DataContext } from '../components/context/DataContext';
+import type { NextPage } from 'next';
+import { useState } from 'react';
 import useDataStore from '../lib/dataStore';
 
 function BasicSelect({ handleChange }: { handleChange: any }) {
