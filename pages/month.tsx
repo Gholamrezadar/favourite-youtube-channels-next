@@ -45,7 +45,7 @@ function SelectYear({ handleChange }: { handleChange: any }) {
   );
 }
 
-function SelectMonth({MonthsLength, handleChange }: { handleChange: any }) {
+function SelectMonth({MonthsLength, handleChange }: { MonthsLength: number, handleChange: any }) {
 
   const [currentMonth, setCurrentMonth] = useState("January")
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
