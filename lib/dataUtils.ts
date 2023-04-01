@@ -10,6 +10,14 @@ export interface ChannelItem {
     numVideosWatched: number;
 }
 
+export interface VideoItem {
+    videoUrl: string;
+    videoTitle: string;
+    channelUrl: string;
+    channelName: string;
+    watchCount: number;
+}
+
 interface JsonType {
     header?: string;
     title?: string;
@@ -24,19 +32,27 @@ interface JsonType {
 }
 
 function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export const processData = async (data: JsonType[]) => {
-    let { overallData, firstYear, lastYear } = getOverallChannels(data);
-    let yearData = getYearChannels(data);
-    let monthData = getMonthChannels(data);
+    const { overallData, firstYear, lastYear } = getOverallChannels(data);
+    const yearData = getYearChannels(data);
+    const monthData = getMonthChannels(data);
+    const rewatchData = getRewatch(data);
     // let danfoData = getDanfoData(data);
 
     // await sleep(2000); // fake sleep for testing
 
-    return { overallData: overallData, yearData: yearData, monthData: monthData, firstYear: firstYear, lastYear: lastYear };
-}
+    return {
+        overallData: overallData,
+        yearData: yearData,
+        monthData: monthData,
+        firstYear: firstYear,
+        lastYear: lastYear,
+        rewatchData: rewatchData
+    };
+};
 
 // export const getDanfoData = (data: JsonType[]) => {
 //     let df = new dfd.DataFrame(data)
@@ -45,11 +61,11 @@ export const processData = async (data: JsonType[]) => {
 // }
 
 export const getOverallChannels = (data: JsonType[]) => {
-    let map = new Map<string, { numVideosWatched: number, channelUrl: string }>();
+    let map = new Map<string, { numVideosWatched: number; channelUrl: string }>();
 
     // Count Videos for each channel
     for (let d of data) {
-        if (d.hasOwnProperty('subtitles')) {
+        if (d.hasOwnProperty("subtitles")) {
             let date = new Date(d.time);
             let videoYear = date.getFullYear();
 
@@ -64,15 +80,16 @@ export const getOverallChannels = (data: JsonType[]) => {
             let channelName = d.subtitles[0].name;
             let channelUrl = d.subtitles[0].url;
             if (map.has(channelName)) {
-
                 let prevNumVideosWatched: number = 0;
-                let item = map.get(channelName)
+                let item = map.get(channelName);
                 if (item !== undefined) {
-                    prevNumVideosWatched = item.numVideosWatched
+                    prevNumVideosWatched = item.numVideosWatched;
                 }
-                map.set(channelName, { channelUrl: channelUrl, numVideosWatched: prevNumVideosWatched + 1 });
-            }
-            else {
+                map.set(channelName, {
+                    channelUrl: channelUrl,
+                    numVideosWatched: prevNumVideosWatched + 1,
+                });
+            } else {
                 map.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 });
             }
         }
@@ -83,41 +100,53 @@ export const getOverallChannels = (data: JsonType[]) => {
     // let mappp = mapp.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
 
     // new method
-    map = [...map.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1)
-    let list: ChannelItem[] = map.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }))
+    map = [...map.entries()].sort((a, b) =>
+        b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1
+    );
+    let list: ChannelItem[] = map.map((a) => ({
+        channelName: a[0],
+        channelUrl: a[1].channelUrl,
+        numVideosWatched: a[1].numVideosWatched,
+    }));
 
     return { overallData: list, firstYear: firstYear, lastYear: lastYear };
-}
+};
 
 export const getYearChannels = (data: JsonType[]) => {
     let map = new Map();
 
     // Count Videos for each channel by year
     for (let d of data) {
-        if (d.hasOwnProperty('subtitles')) {
+        if (d.hasOwnProperty("subtitles")) {
             let date = new Date(d.time);
             let videoYear = date.getFullYear();
             let channelName = d.subtitles[0].name;
             let channelUrl = d.subtitles[0].url;
 
             if (map.has(videoYear)) {
-                let innerMap = map.get(videoYear)
+                let innerMap = map.get(videoYear);
                 if (innerMap.has(channelName)) {
-                    let prevNumVideosWatched = innerMap.get(channelName).numVideosWatched
-                    innerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: prevNumVideosWatched + 1 });
+                    let prevNumVideosWatched = innerMap.get(channelName).numVideosWatched;
+                    innerMap.set(channelName, {
+                        channelUrl: channelUrl,
+                        numVideosWatched: prevNumVideosWatched + 1,
+                    });
+                } else {
+                    innerMap.set(channelName, {
+                        channelUrl: channelUrl,
+                        numVideosWatched: 1,
+                    });
                 }
-                else {
-                    innerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 });
-                }
-            }
-            else {
+            } else {
                 let innerMap = new Map();
-                innerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 })
+                innerMap.set(channelName, {
+                    channelUrl: channelUrl,
+                    numVideosWatched: 1,
+                });
                 map.set(videoYear, innerMap);
             }
         }
     }
-
 
     // Sort the map
     let newMap = new Map();
@@ -126,55 +155,84 @@ export const getYearChannels = (data: JsonType[]) => {
         let innerMap = yearItem[1]; // yearItem[0] is the key aka the year
 
         // Sort the innerMap aka the channels map
-        innerMap = [...innerMap.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
-        innerMap = innerMap.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
+        innerMap = [...innerMap.entries()].sort((a, b) =>
+            b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1
+        );
+        innerMap = innerMap.map((a) => ({
+            channelName: a[0],
+            channelUrl: a[1].channelUrl,
+            numVideosWatched: a[1].numVideosWatched,
+        }));
         newMap.set(yearItem[0], innerMap);
     });
 
     // yearData = newMap;
 
     return newMap;
-}
+};
 
 const intToMonth = (month: number) => {
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    return months[month]
-}
+    const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ];
+    return months[month];
+};
 
 export const getMonthChannels = (data: JsonType[]) => {
     let map = new Map();
 
     // Count Videos for each channel by year
     for (let d of data) {
-        if (d.hasOwnProperty('subtitles')) {
+        if (d.hasOwnProperty("subtitles")) {
             let date = new Date(d.time);
-            let videoYear = date.getFullYear().toString()
-            let videoMonth = intToMonth(date.getMonth())
+            let videoYear = date.getFullYear().toString();
+            let videoMonth = intToMonth(date.getMonth());
             let channelName = d.subtitles[0].name;
             let channelUrl = d.subtitles[0].url;
 
             if (map.has(videoYear)) {
-                let innerMap = map.get(videoYear)
+                let innerMap = map.get(videoYear);
                 if (innerMap.has(videoMonth)) {
-                    let innerInnerMap = innerMap.get(videoMonth)
+                    let innerInnerMap = innerMap.get(videoMonth);
                     if (innerInnerMap.has(channelName)) {
-                        let prevNumVideosWatched = innerInnerMap.get(channelName).numVideosWatched
-                        innerInnerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: prevNumVideosWatched + 1 });
+                        let prevNumVideosWatched =
+                            innerInnerMap.get(channelName).numVideosWatched;
+                        innerInnerMap.set(channelName, {
+                            channelUrl: channelUrl,
+                            numVideosWatched: prevNumVideosWatched + 1,
+                        });
+                    } else {
+                        innerInnerMap.set(channelName, {
+                            channelUrl: channelUrl,
+                            numVideosWatched: 1,
+                        });
                     }
-                    else {
-                        innerInnerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 });
-                    }
-                }
-                else {
+                } else {
                     let innerInnerMap = new Map();
-                    innerInnerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 })
+                    innerInnerMap.set(channelName, {
+                        channelUrl: channelUrl,
+                        numVideosWatched: 1,
+                    });
                     innerMap.set(videoMonth, innerInnerMap);
                 }
-            }
-            else {
+            } else {
                 let innerMap = new Map();
                 let innerInnerMap = new Map();
-                innerInnerMap.set(channelName, { channelUrl: channelUrl, numVideosWatched: 1 })
+                innerInnerMap.set(channelName, {
+                    channelUrl: channelUrl,
+                    numVideosWatched: 1,
+                });
                 innerMap.set(videoMonth, innerInnerMap);
                 map.set(videoYear, innerMap);
             }
@@ -185,16 +243,63 @@ export const getMonthChannels = (data: JsonType[]) => {
     map = [...map.entries()].map((yearItem) => {
         let innerMap = yearItem[1]; // yearItem[0] is the key aka the year
 
-        innerMap = [...innerMap.entries()].map((monthItem) => { 
+        innerMap = [...innerMap.entries()].map((monthItem) => {
             let innerInnerMap = monthItem[1]; // monthItem[0] is the key aka the month
 
-            innerInnerMap = [...innerInnerMap.entries()].sort((a, b) => b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1);
-            innerInnerMap = innerInnerMap.map((a) => ({ channelName: a[0], channelUrl: a[1].channelUrl, numVideosWatched: a[1].numVideosWatched }));
-            return [monthItem[0], innerInnerMap]
+            innerInnerMap = [...innerInnerMap.entries()].sort((a, b) =>
+                b[1].numVideosWatched > a[1].numVideosWatched ? 1 : -1
+            );
+            innerInnerMap = innerInnerMap.map((a) => ({
+                channelName: a[0],
+                channelUrl: a[1].channelUrl,
+                numVideosWatched: a[1].numVideosWatched,
+            }));
+            return [monthItem[0], innerInnerMap];
         });
 
-        return [yearItem[0], new Map(innerMap)]
+        return [yearItem[0], new Map(innerMap)];
     });
-    return new Map(map)
+    return new Map(map);
+};
 
-}
+const contains = (map: Map<VideoItem, number>, videoItem: VideoItem) => {
+    for (let [key, value] of map) {
+        if (key.videoUrl === videoItem.videoUrl) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const getRewatch = (data: JsonType[]) => {
+    let VideoItemMap = new Map<string, VideoItem>();
+
+    // Count How many times a video has been watched
+    for (let d of data) {
+        if (d.hasOwnProperty("subtitles")) {
+            if (d.titleUrl === undefined) {
+                continue
+            }
+            let videoItem: VideoItem = {
+                videoUrl: d.titleUrl,
+                videoTitle: d.title,
+                channelUrl: d.subtitles[0].url,
+                channelName: d.subtitles[0].name,
+                watchCount: 1
+            }
+
+            if (VideoItemMap.has(videoItem.videoUrl)) {
+                VideoItemMap.get(videoItem.videoUrl).watchCount++;
+            }
+            else {
+                VideoItemMap.set(videoItem.videoUrl, videoItem);
+            }
+        }
+    }
+
+    // Sort by watchCount
+    let sortedVideoItemMap = new Map([...VideoItemMap.entries()].sort((a, b) => b[1].watchCount - a[1].watchCount));
+    let sortedVideoItemList = [...sortedVideoItemMap.values()];
+
+    return sortedVideoItemList;
+};
